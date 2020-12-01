@@ -13,11 +13,9 @@ const locationMessageTemplate = document.querySelector('#locationMessageTemplate
 const sidebarTemplate = document.querySelector('#sidebarTemplate').innerHTML
 
 //Options 
-const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
-
-// socket.on('welcome', (welcome) => {
-//     console.log(welcome)
-// })
+const { username} = Qs.parse(location.search, { ignoreQueryPrefix: true })
+let {room, newRoom} = Qs.parse(location.search, { ignoreQueryPrefix: true })
+if (newRoom && newRoom != '' ) room = newRoom
 
 const autoscroll = () => {
     const $newMessage = $messages.lastElementChild
@@ -105,6 +103,7 @@ $sendLocation.addEventListener('click', () => {
         })
     })
 })
+
 
 socket.emit('join', { username, room}, (error) => {
     if(error) {

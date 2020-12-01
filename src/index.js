@@ -4,7 +4,7 @@ const express = require('express')
 const socketio = require('socket.io')
 const Filter = require('bad-words')
 const { generateMessage, generateLocationMessage} = require('./utils/messages')
-const { addUser, removeUser, getUser, getUsersInRoom} = require('./utils/users')
+const { addUser, removeUser, getUser, getUsersInRoom, getRooms} = require('./utils/users')
 
 const app = express()
 const server = http.createServer(app)
@@ -18,6 +18,9 @@ app.use(express.static(publicDirectoryPath))
 
 io.on('connection', (socket) => {
     console.log('New Connection')
+    socket.emit('roomList', {
+        rooms: getRooms()
+    })
 
     socket.on('join', (options, callback) => {
         const { error, user } = addUser({
@@ -26,7 +29,6 @@ io.on('connection', (socket) => {
         if(error) {
             return callback(error)
         }
-
         socket.join(user.room)
 
         socket.emit('message', generateMessage('Admin', `Welcome ${user.username}`))
